@@ -6,7 +6,7 @@ public interface ActorServiceInterface<T extends SimulatedActorEntity, S extends
 
     T getAvailable();
 
-    void checkAndUpdateAvailability(T actor);
+    void checkAndUpdateAvailability();
 
     void updateStatus(Long id, S status);
 }

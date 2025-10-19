@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customer")
 @DiscriminatorValue("CUSTOMER")
 @Getter
 @Setter
@@ -19,6 +19,6 @@ public class CustomerEntity extends SimulatedActorEntity {
     private CustomerStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actor_id")
-    private OrderTicketEntity ticket;
+    @JoinColumn(name = "ticket_id")
+    private ServiceTicketEntity ticket;
 }

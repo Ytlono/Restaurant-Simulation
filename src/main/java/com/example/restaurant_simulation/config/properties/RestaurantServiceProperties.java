@@ -6,8 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.time.Duration;
 
 @Data
-@ConfigurationProperties(prefix = "restaurant-service")
+@ConfigurationProperties(prefix = "restaurant-simulation") // ⬅️ ИЗМЕНИТЕ ЗДЕСЬ
 public class RestaurantServiceProperties {
+    private String orderReadyTopic;
     private Actors actors;
 
     @Data

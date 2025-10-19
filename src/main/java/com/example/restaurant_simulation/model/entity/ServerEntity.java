@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "servers")
+@Table(name = "server")
 @DiscriminatorValue("SERVER")
 @Getter
 @Setter

@@ -4,6 +4,7 @@ import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.enums.TicketType;
 import com.example.restaurant_simulation.model.entity.*;
 import com.example.restaurant_simulation.model.repository.OrderTicketRepository;
+import com.example.restaurant_simulation.model.repository.ServiceTicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -14,8 +15,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderTicketService {
     private  final OrderTicketRepository orderTicketRepository;
+    private final ServiceTicketRepository serviceTicketRepository;
 
-    public void createOrderTicketByType(OrderEntity order, TicketType type) {
+    public OrderTicketEntity createOrderTicketByType(OrderEntity order, TicketType type) {
         OrderTicketEntity ticketEntity;
 
         switch (type) {
@@ -34,8 +36,7 @@ public class OrderTicketService {
             default -> throw new IllegalArgumentException("Unsupported ticket type: " + type);
         }
 
-        orderTicketRepository.save(ticketEntity);
-        log.info("Created {} ticket for order {}", type, order.getId());
+        return orderTicketRepository.saveAndFlush(ticketEntity);
     }
 
     public void setActorToKitchenTicket(KitchenTicketEntity ticket, CookEntity actor) {
@@ -46,5 +47,18 @@ public class OrderTicketService {
 
     public void updateStatus(Long id, OrderTicketStatus status){
         orderTicketRepository.updateStatus(id,status);
+    }
+
+    public OrderTicketEntity getOldestTicketByTypeAndStatus(TicketType ticketType, OrderTicketStatus orderTicketStatus) {
+        return orderTicketRepository.findFirstByTypeAndStatusOrderByCreatedAtAsc(ticketType,orderTicketStatus);
+    }
+
+    public ServiceTicketEntity findById(Long ticketId) {
+        return (ServiceTicketEntity) orderTicketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
+    }
+
+    public ServiceTicketEntity findServiceTicketByOrderId(Long orderId){
+        return serviceTicketRepository.findByOrderId(orderId).orElseThrow();
     }
 }

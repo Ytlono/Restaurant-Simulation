@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: restaurant-simulation
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:restaurant}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:pstgrs}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:restaurant-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+restaurant-simulation:
+  order-ready-topic: order-ready
+
+  actors:
+    cook-actor-threshold: 20s
+    order-taker-threshold: 3s
+    customer-threshold: 8s
+
+  scheduler:
+    actors-availability:
+      enabled: true
+      customer-rate-ms: 1000
+      cook-rate-ms: 1000
+      order-taker-rate-ms: 1000
+      server-rate-ms: 1000
+
+    simulation-handler:
+      enabled: true
+      customer-rate-ms: 1000
+      order-taker-rate-ms: 1000
+      cook-rate-ms: 1000
+      server-rate-ms: 1000
+
+kafka:
+  consumer:
+    confirmation:
+      enabled: true

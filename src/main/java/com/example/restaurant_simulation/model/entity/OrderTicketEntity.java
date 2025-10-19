@@ -16,6 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @Entity
+@Table(name = "order_ticket")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "ticket_type",discriminatorType = DiscriminatorType.STRING)
 @Data

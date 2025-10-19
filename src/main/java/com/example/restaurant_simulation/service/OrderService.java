@@ -6,6 +6,8 @@ import com.example.restaurant_simulation.model.entity.OrderEntity;
 import com.example.restaurant_simulation.model.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class OrderService {
         return orderRepository.findFirstByStatusOrderByUpdatedAtAsc(OrderStatus.PENDING);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateStatus(Long id, OrderStatus status){
         orderRepository.updateStatus(id,status);
     }

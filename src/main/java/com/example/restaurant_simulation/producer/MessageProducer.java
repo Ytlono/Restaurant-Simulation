@@ -13,6 +13,7 @@ public class MessageProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public CompletableFuture<SendResult<String, String>> send(String topic, String message) {
+        System.out.println("MESSSSSSSSAGEEEEEEEE PERODUCERRRRRR CALLLLLLLLLLLLLLLLED");
         return kafkaTemplate.send(topic, message);
     }
 }

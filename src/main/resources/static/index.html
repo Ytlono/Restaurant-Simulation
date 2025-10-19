@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Simulation</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background: #f7f9fb;
+          margin: 0;
+          padding: 20px;
+        }
+
+        h1 {
+          text-align: center;
+          color: #333;
+        }
+
+        .controls {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+
+        input, select, button {
+          padding: 8px 10px;
+          font-size: 14px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          background: #007bff;
+          color: white;
+          cursor: pointer;
+          border: none;
+        }
+
+        button:hover {
+          background: #0056b3;
+        }
+
+        .customers-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .customer {
+          width: 140px;
+          height: 140px;
+          border-radius: 12px;
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          font-weight: bold;
+          transition: all 0.3s ease;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .WAITING { background: #ffc107; color: #222; }
+        .AVAILABLE { background: #28a745; }
+        .SERVED { background: #6c757d; }
+
+        .customer:hover {
+          transform: scale(1.05);
+        }
+
+        .delete-btn {
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          padding: 4px 8px;
+          cursor: pointer;
+          font-size: 12px;
+          margin-top: 6px;
+        }
+
+        .delete-btn:hover {
+          background: #a71d2a;
+        }
+
+        .fade-in {
+          animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+<h1>Customer Simulation</h1>
+
+<div class="controls">
+    <input id="name" type="text" placeholder="Customer name">
+    <select id="status">
+        <option value="WAITING">WAITING</option>
+        <option value="AVAILABLE">AVAILABLE</option>
+        <option value="SERVED">SERVED</option>
+    </select>
+    <button onclick="createCustomer()">Add</button>
+</div>
+
+<div class="customers-container" id="customers"></div>
+
+<script>
+    const API = '/api/customers';
+    const container = document.getElementById('customers');
+
+    async function loadCustomers() {
+      try {
+        const res = await fetch(API);
+        const customers = await res.json();
+
+        container.innerHTML = '';
+        customers.forEach(c => {
+          const div = document.createElement('div');
+          div.className = `customer ${c.status} fade-in`;
+          div.innerHTML = `
+            <div>${c.name}</div>
+            <div style="font-size: 12px; margin-top: 6px;">${c.status}</div>
+            <button class="delete-btn" onclick="deleteCustomer(${c.id})">Delete</button>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Error loading customers', err);
+      }
+    }
+
+    async function createCustomer() {
+      const name = document.getElementById('name').value.trim();
+      const status = document.getElementById('status').value;
+      if (!name) {
+        alert('Enter a name');
+        return;
+      }
+
+      await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, status})
+      });
+
+      document.getElementById('name').value = '';
+      await loadCustomers();
+    }
+
+    async function deleteCustomer(id) {
+      await fetch(`${API}/${id}`, {method: 'DELETE'});
+      await loadCustomers();
+    }
+
+    loadCustomers();
+    setInterval(loadCustomers, 1200); // обновление каждые 0.5 секунды
+</script>
+</body>
+</html>

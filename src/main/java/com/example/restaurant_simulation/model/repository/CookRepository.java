@@ -7,11 +7,14 @@ import com.example.restaurant_simulation.model.entity.CookEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.Instant;
+import java.util.List;
 
 public interface CookRepository extends JpaRepository<CookEntity,Long> {
     CookEntity findFirstByStatusOrderByUpdatedAtAsc(CookStatus customerStatus);
 
-    @Modifying
-    @Query("UPDATE CookEntity n SET n.status = :status WHERE n.id = :id")
-    void updateStatus(Long id, CookStatus status);
+    List<CookEntity> findAllByUpdatedAtBefore(Instant threshold);
+
 }

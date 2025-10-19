@@ -13,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @Entity
+@Table(name = "simulated_actor")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "actor_role",discriminatorType = DiscriminatorType.STRING)
 @Data
@@ -31,11 +32,11 @@ public class SimulatedActorEntity {
     @Column(name = "role", nullable = false)
     private ActorRole role;
 
-    @CreationTimestamp(source = SourceType.DB)
+    @CreationTimestamp(source = SourceType.VM) // ← ИЗМЕНИТЕ НА VM
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp(source = SourceType.DB)
+    @UpdateTimestamp(source = SourceType.VM) // ← ИЗМЕНИТЕ НА VM
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 }

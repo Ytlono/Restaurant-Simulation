@@ -10,11 +10,13 @@ import com.example.restaurant_simulation.model.entity.OrderTicketEntity;
 import com.example.restaurant_simulation.model.repository.CookRepository;
 import com.example.restaurant_simulation.service.interfaces.ActorServiceInterface;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-
+import java.util.List;
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CookService implements ActorServiceInterface<CookEntity,CookStatus> {
@@ -54,30 +56,32 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
 
     @Override
     @Transactional
-    public void checkAndUpdateAvailability(CookEntity cook) {
+    public void checkAndUpdateAvailability() {
         Instant threshold = Instant.now().minus(
                 properties.getActors().getCookActorThreshold()
         );
 
-        if (!threshold.isBefore(cook.getUpdatedAt())) return;
+        List<CookEntity> expiredCooks = cookRepository.findAllByUpdatedAtBefore(threshold);
 
-        Long ticketId;
-
-        if (cook.getCurrentTicket() != null) {
-            ticketId = cook.getCurrentTicket().getId();
-        } else {
-            KitchenTicketEntity ticket = kitchenTicketService.getByActor(cook);
-
-            if (ticket == null) return;
-            ticketId = ticket.getId();
+        if (expiredCooks.isEmpty()){
+            System.out.println("COOOOK ACTOR NO EXPIRED COOK");
+            return;
         }
 
-        updateStatus(cook.getId(),CookStatus.AVAILABLE);
-        ticketService.updateStatus(ticketId, OrderTicketStatus.COMPLETED);
+        expiredCooks.forEach(cook -> {
+            cook.setStatus(CookStatus.AVAILABLE);
+            cookRepository.save(cook);
+            kitchenTicketService.updateTicketsStatusForActor(cook, OrderTicketStatus.COMPLETED);
+        });
+
+        log.info("Updated {} expired cooks to AVAILABLE and their tickets to CANCELLED", expiredCooks.size());
     }
 
     @Override
-    public void updateStatus(Long id,CookStatus status){
-        cookRepository.updateStatus(id,status);
+    public void updateStatus(Long id, CookStatus status){
+        CookEntity cook = cookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cook not found: " + id));
+        cook.setStatus(status);
+        cookRepository.save(cook);
     }
 }

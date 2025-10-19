@@ -18,7 +18,6 @@ import java.time.Instant;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 public class ServiceTicketEntity extends OrderTicketEntity{
 
 }

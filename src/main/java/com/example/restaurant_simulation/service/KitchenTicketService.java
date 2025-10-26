@@ -24,17 +24,14 @@ public class KitchenTicketService {
         return ticketRepository.findFirstByTypeAndStatusOrderByCreatedAtAsc(type,status);
     }
 
-    public KitchenTicketEntity getByActor(CookEntity actor) {
-        return ticketRepository.getByActor(actor);
+    @Transactional
+    public void updateTicketsStatus(KitchenTicketEntity ticket, OrderTicketStatus newStatus) {
+        if (ticket == null) {
+            log.warn("❌ Attempted to update status of null KitchenTicketEntity!");
+            return;
+        }
+        ticket.setStatus(newStatus);
+        ticketRepository.save(ticket);
     }
 
-    @Transactional
-    public void updateTicketsStatusForActor(CookEntity actor, OrderTicketStatus newStatus) {
-        int updated = ticketRepository.updateStatusByActorAndCurrentStatus(
-                actor,
-                OrderTicketStatus.IN_PROGRESS,
-                newStatus
-        );
-        log.info("Updated {} IN_PROGRESS tickets for cook {} to {}", updated, actor.getId(), newStatus);
-    }
 }

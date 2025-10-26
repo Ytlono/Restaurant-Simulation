@@ -14,19 +14,4 @@ import org.springframework.data.repository.query.Param;
 public interface KitchenTicketRepository extends JpaRepository<KitchenTicketEntity,Long> {
     KitchenTicketEntity findFirstByTypeAndStatusOrderByCreatedAtAsc(TicketType type, OrderTicketStatus status);
 
-    KitchenTicketEntity getByActor(CookEntity actor);
-
-    @Modifying
-    @Query("""
-    update KitchenTicketEntity kt
-    set kt.status = :newStatus
-    where kt.actor = :actor
-      and kt.status = :currentStatus
-""")
-    int updateStatusByActorAndCurrentStatus(
-            @Param("actor") CookEntity actor,
-            @Param("currentStatus") OrderTicketStatus currentStatus,
-            @Param("newStatus") OrderTicketStatus newStatus
-    );
-
 }

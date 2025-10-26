@@ -39,12 +39,6 @@ public class OrderTicketService {
         return orderTicketRepository.saveAndFlush(ticketEntity);
     }
 
-    public void setActorToKitchenTicket(KitchenTicketEntity ticket, CookEntity actor) {
-        ticket.setActor(actor);
-        orderTicketRepository.save(ticket);
-    }
-
-
     public void updateStatus(Long id, OrderTicketStatus status){
         orderTicketRepository.updateStatus(id,status);
     }

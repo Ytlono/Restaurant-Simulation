@@ -18,9 +18,5 @@ import java.time.Instant;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 public class KitchenTicketEntity extends OrderTicketEntity{
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actor_id")
-    private CookEntity actor;
 }

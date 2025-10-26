@@ -27,7 +27,7 @@ restaurant-simulation:
 
   actors:
     cook-actor-threshold: 20s
-    order-taker-threshold: 3s
+    order-taker-threshold: 10s
     customer-threshold: 8s
 
   scheduler:

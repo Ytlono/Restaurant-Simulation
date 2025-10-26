@@ -1,11 +1,10 @@
 package com.example.restaurant_simulation.service;
 
 import com.example.restaurant_simulation.config.properties.RestaurantServiceProperties;
-import com.example.restaurant_simulation.enums.CookStatus;
-import com.example.restaurant_simulation.enums.OrderTicketStatus;
-import com.example.restaurant_simulation.enums.TicketType;
+import com.example.restaurant_simulation.enums.*;
 import com.example.restaurant_simulation.model.entity.CookEntity;
 import com.example.restaurant_simulation.model.entity.KitchenTicketEntity;
+import com.example.restaurant_simulation.model.entity.OrderTakerEntity;
 import com.example.restaurant_simulation.model.entity.OrderTicketEntity;
 import com.example.restaurant_simulation.model.repository.CookRepository;
 import com.example.restaurant_simulation.service.interfaces.ActorServiceInterface;
@@ -25,6 +24,24 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
     private final KitchenTicketService kitchenTicketService;
     private final RestaurantServiceProperties properties;
 
+    public List<CookEntity> getAllCooks() {
+        return cookRepository.findAll();
+    }
+
+    public CookEntity getCookById(Long id) {
+        return cookRepository.findById(id).orElseThrow();
+    }
+
+    public CookEntity addCook(CookEntity cook) {
+        cook.setRole(ActorRole.COOK);
+        cook.setStatus(CookStatus.AVAILABLE);
+        return cookRepository.save(cook);
+    }
+
+    public void deleteCook(Long id) {
+        cookRepository.deleteById(id);
+    }
+
     @Transactional
     public void processOrder(CookEntity cook) {
         KitchenTicketEntity orderTicket = kitchenTicketService.getOldestTicketByTypeAndStatus(
@@ -35,9 +52,8 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
         if (orderTicket == null)
             return;
 
-        cook.setCurrentTicket(orderTicket);
+        cook.setTicket(orderTicket);
         cook.setStatus(CookStatus.PROCESSING);
-        orderTicket.setActor(cook);
 
         ticketService.updateStatus(
                 orderTicket.getId(),
@@ -70,8 +86,8 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
 
         expiredCooks.forEach(cook -> {
             cook.setStatus(CookStatus.AVAILABLE);
+            kitchenTicketService.updateTicketsStatus(cook.getTicket(),OrderTicketStatus.COMPLETED);
             cookRepository.save(cook);
-            kitchenTicketService.updateTicketsStatusForActor(cook, OrderTicketStatus.COMPLETED);
         });
 
         log.info("Updated {} expired cooks to AVAILABLE and their tickets to CANCELLED", expiredCooks.size());
@@ -81,6 +97,7 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
     public void updateStatus(Long id, CookStatus status){
         CookEntity cook = cookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cook not found: " + id));
+
         cook.setStatus(status);
         cookRepository.save(cook);
     }

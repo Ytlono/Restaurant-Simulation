@@ -18,9 +18,10 @@ public class CookEntity extends SimulatedActorEntity {
     @Column(name = "status")
     private CookStatus status;
 
-    @Transient
-    private OrderTicketEntity currentTicket;
-
     @Column(name = "speciality")
     private String speciality;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id")
+    private KitchenTicketEntity ticket;
 }

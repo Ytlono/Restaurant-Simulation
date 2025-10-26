@@ -1,11 +1,13 @@
 package com.example.restaurant_simulation.service;
 
 import com.example.restaurant_simulation.config.properties.RestaurantServiceProperties;
+import com.example.restaurant_simulation.enums.ActorRole;
 import com.example.restaurant_simulation.enums.CustomerStatus;
 import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.model.entity.CustomerEntity;
 import com.example.restaurant_simulation.model.entity.OrderTicketEntity;
 import com.example.restaurant_simulation.model.entity.ServiceTicketEntity;
+import com.example.restaurant_simulation.model.entity.SimulatedActorEntity;
 import com.example.restaurant_simulation.model.repository.CustomerRepository;
 import com.example.restaurant_simulation.model.repository.OrderTicketRepository;
 import com.example.restaurant_simulation.service.interfaces.ActorServiceInterface;
@@ -34,6 +36,7 @@ public class CustomerService implements ActorServiceInterface<CustomerEntity,Cus
 
     @Transactional
     public CustomerEntity addCustomer(CustomerEntity customer) {
+        customer.setRole(ActorRole.CUSTOMER);
         customer.setStatus(CustomerStatus.AVAILABLE);
         return customerRepository.save(customer);
     }

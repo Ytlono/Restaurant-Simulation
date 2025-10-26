@@ -1,6 +1,7 @@
 package com.example.restaurant_simulation.controller;
 
 import com.example.restaurant_simulation.dto.model.CustomerDto;
+import com.example.restaurant_simulation.dto.request.CreateCustomerRequest;
 import com.example.restaurant_simulation.mapper.CustomerMapper;
 import com.example.restaurant_simulation.model.entity.CustomerEntity;
 import com.example.restaurant_simulation.service.CustomerService;
@@ -36,8 +37,8 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDto> create(@RequestBody CustomerDto dto) {
-        CustomerEntity saved = customerService.addCustomer(customerMapper.toEntity(dto));
+    public ResponseEntity<CustomerDto> create(@RequestBody CreateCustomerRequest dto) {
+        CustomerEntity saved = customerService.addCustomer(customerMapper.toEntityFromRequest(dto));
         return ResponseEntity.ok(customerMapper.toDto(saved));
     }
 

@@ -4,10 +4,11 @@ import com.example.restaurant_simulation.enums.OrderStatus;
 import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.model.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
+public interface OrderRepository extends JpaRepository<OrderEntity,Long>, JpaSpecificationExecutor<OrderEntity> {
 
     OrderEntity findFirstByStatusOrderByUpdatedAtAsc(OrderStatus status);
 

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,6 +22,22 @@ public class OrderTakerService {
     private final OrderTicketService ticketService;
     private final CustomerService customerService;
     private final OrderService orderService;
+
+    public List<OrderTakerEntity> getAllOrderTakers() {
+        return orderTakerRepository.findAll();
+    }
+
+    public OrderTakerEntity getOrderTakerById(Long id) {
+        return orderTakerRepository.findById(id).orElseThrow();
+    }
+
+    public OrderTakerEntity addOrderTaker(OrderTakerEntity entity) {
+        return orderTakerRepository.save(entity);
+    }
+
+    public void deleteOrderTaker(Long id) {
+        orderTakerRepository.deleteById(id);
+    }
 
     @Transactional
     public void processOrderTicket(OrderTakerEntity orderTaker){
@@ -81,4 +98,5 @@ public class OrderTakerService {
 
         System.out.println("Updated " + expiredOrderTakers.size() + " expired order takers to AVAILABLE");
     }
+
 }

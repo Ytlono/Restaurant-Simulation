@@ -24,9 +24,6 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_number", nullable = false, unique = true)
-    private Integer orderNumber;
-
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customerEntity;

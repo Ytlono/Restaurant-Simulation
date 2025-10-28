@@ -180,4 +180,141 @@ class UIManager {
     showAddDialog(title) {
         return prompt(title);
     }
+
+    getOrderStatusText(status) {
+            const statusMap = {
+                'PENDING': 'Ожидание',
+                'IN_PROGRESS': 'В процессе',
+                'COOKING': 'Готовится',
+                'READY': 'Готов',
+                'SERVED': 'Подано'
+            };
+            return statusMap[status] || status;
+        }
+
+        getOrderStatusClass(status) {
+            const classMap = {
+                'PENDING': 'status-pending',
+                'IN_PROGRESS': 'status-in_progress',
+                'COOKING': 'status-cooking',
+                'READY': 'status-ready',
+                'SERVED': 'status-served'
+            };
+            return classMap[status] || 'status-pending';
+        }
+
+        displayOrders(orders, pageInfo, containerId) {
+            const grid = document.getElementById(containerId);
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            if (!orders || orders.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Заказы не найдены</p>';
+                return;
+            }
+
+            orders.forEach(order => {
+                this.createOrderCard(order, containerId);
+            });
+
+            // Обновляем информацию о пагинации
+            this.updatePaginationInfo(pageInfo);
+        }
+
+        createOrderCard(order, containerId) {
+            const grid = document.getElementById(containerId);
+            if (!grid) return;
+
+            const orderCard = document.createElement('div');
+            orderCard.className = `order-card ${this.getOrderStatusClass(order.status)}`;
+
+            const createdDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Неизвестно';
+            const updatedDate = order.updatedAt ? new Date(order.updatedAt).toLocaleString() : 'Неизвестно';
+
+            // ИСПРАВЛЕНИЕ: используем customerName вместо customer.name
+            orderCard.innerHTML = `
+                <div class="order-id">#${order.id}</div>
+                <div class="order-customer">
+                    Клиент: ${order.customerName || 'Неизвестен'}
+                    ${order.customerId ? `(ID: ${order.customerId})` : ''}
+                </div>
+                <div class="order-status">${this.getOrderStatusText(order.status)}</div>
+                <div class="order-timestamp">
+                    Создан: ${createdDate}<br>
+                    Обновлен: ${updatedDate}
+                </div>
+            `;
+
+            grid.appendChild(orderCard);
+        }
+
+        // Обновление информации о пагинации
+        updatePaginationInfo(pageInfo) {
+            const pageInfoElement = document.getElementById('pageInfo');
+            const firstPageBtn = document.getElementById('firstPageBtn');
+            const prevPageBtn = document.getElementById('prevPageBtn');
+            const nextPageBtn = document.getElementById('nextPageBtn');
+            const lastPageBtn = document.getElementById('lastPageBtn');
+
+            if (pageInfoElement && pageInfo) {
+                pageInfoElement.textContent = `Страница ${pageInfo.currentPage + 1} из ${pageInfo.totalPages}`;
+            }
+
+            // Обновляем состояние кнопок
+            if (firstPageBtn) firstPageBtn.disabled = !pageInfo || pageInfo.currentPage === 0;
+            if (prevPageBtn) prevPageBtn.disabled = !pageInfo || pageInfo.currentPage === 0;
+            if (nextPageBtn) nextPageBtn.disabled = !pageInfo || pageInfo.currentPage === pageInfo.totalPages - 1;
+            if (lastPageBtn) lastPageBtn.disabled = !pageInfo || pageInfo.currentPage === pageInfo.totalPages - 1;
+        }
+
+        // Получение текущих фильтров из формы
+        getCurrentFilters() {
+            const filters = {
+                statuses: [],
+                minDate: null,
+                maxDate: null
+            };
+
+            // Собираем выбранные статусы
+            const statusCheckboxes = document.querySelectorAll('input[name="status"]:checked');
+            filters.statuses = Array.from(statusCheckboxes).map(cb => cb.value);
+
+            // Получаем даты
+            const minDateInput = document.getElementById('minDate');
+            const maxDateInput = document.getElementById('maxDate');
+
+            if (minDateInput && minDateInput.value) {
+                filters.minDate = new Date(minDateInput.value).toISOString();
+            }
+
+            if (maxDateInput && maxDateInput.value) {
+                filters.maxDate = new Date(maxDateInput.value).toISOString();
+            }
+
+            // Получаем сортировку
+            const sortingSelect = document.getElementById('orderSorting');
+            if (sortingSelect) {
+                this.currentOrderSorting = sortingSelect.value;
+            }
+
+            return filters;
+        }
+
+        // Сброс фильтров в форме
+        resetFiltersForm() {
+            // Сбрасываем все чекбоксы статусов
+            const statusCheckboxes = document.querySelectorAll('input[name="status"]');
+            statusCheckboxes.forEach(cb => cb.checked = true);
+
+            // Сбрасываем даты
+            const minDateInput = document.getElementById('minDate');
+            const maxDateInput = document.getElementById('maxDate');
+            if (minDateInput) minDateInput.value = '';
+            if (maxDateInput) maxDateInput.value = '';
+
+            // Сбрасываем сортировку
+            const sortingSelect = document.getElementById('orderSorting');
+            if (sortingSelect) sortingSelect.value = 'CREATED_AT_DESC';
+        }
 }

@@ -18,7 +18,6 @@ class OrderService {
     async getOrders(page = this.currentPage, size = this.pageSize, sorting = this.currentSorting) {
         try {
             const requestBody = {
-                userIds: this.currentFilters.userIds,
                 statuses: this.currentFilters.statuses,
                 minDate: this.currentFilters.minDate,
                 maxDate: this.currentFilters.maxDate
@@ -44,16 +43,21 @@ class OrderService {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
-                throw new Error(`Ошибка загрузки заказов: ${response.status}`);
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`Ошибка загрузки заказов: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
+
+            console.log('Order response:', data);
 
             // Сохраняем информацию о пагинации
             this.currentPage = data.number;

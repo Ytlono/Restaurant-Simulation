@@ -1,19 +1,18 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.config.properties.RestaurantServiceProperties;
 import com.example.restaurant_simulation.enums.*;
 import com.example.restaurant_simulation.model.entity.*;
 import com.example.restaurant_simulation.model.repository.OrderTakerRepository;
-import com.example.restaurant_simulation.service.handler.OrderTakerHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
+@Pausable
 @Service
 @RequiredArgsConstructor
 public class OrderTakerService {
@@ -44,11 +43,9 @@ public class OrderTakerService {
         OrderEntity order = orderService.getLatestPendingOrder();
 
         if (order == null) {
-            System.out.println("No pending orders found");
             return;
         }
 
-        // Обновляем статус через entity подход
         updateOrderTakerStatus(orderTaker.getId(), OrderTakerStatus.PROCESSING);
         orderService.updateStatus(order.getId(), OrderStatus.IN_PROGRESS);
 
@@ -71,13 +68,12 @@ public class OrderTakerService {
         );
     }
 
-    // ИСПРАВЛЕННЫЙ МЕТОД - убрал REQUIRES_NEW и используем entity подход
     @Transactional
     public void updateOrderTakerStatus(Long id, OrderTakerStatus status){
         OrderTakerEntity orderTaker = orderTakerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("OrderTaker not found: " + id));
         orderTaker.setStatus(status);
-        orderTakerRepository.save(orderTaker); // ← Теперь updatedAt обновится!
+        orderTakerRepository.save(orderTaker);
     }
 
     @Transactional
@@ -96,7 +92,6 @@ public class OrderTakerService {
             orderTakerRepository.save(orderTaker); // ← Обновит updatedAt!
         });
 
-        System.out.println("Updated " + expiredOrderTakers.size() + " expired order takers to AVAILABLE");
     }
 
 }

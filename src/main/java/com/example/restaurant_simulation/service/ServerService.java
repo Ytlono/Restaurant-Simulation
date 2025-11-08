@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.dto.event.OrderReadyEvent;
 import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.enums.TicketType;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Pausable
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ public class ServerService {
         );
 
         if (orderTicket == null) {
-            System.out.println("I CANT SEEE THEM");
             return;
         }
 

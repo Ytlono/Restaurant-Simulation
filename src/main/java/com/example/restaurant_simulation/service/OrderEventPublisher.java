@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.config.properties.RestaurantServiceProperties;
 import com.example.restaurant_simulation.producer.MessageProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Pausable
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="009-1" author="restaurant_simulation">
+        <createIndex tableName="simulated_actor" indexName="idx_actor_role">
+            <column name="actor_role"/>
+        </createIndex>
+
+        <createIndex tableName="orders" indexName="idx_order_customer">
+            <column name="customer_id"/>
+        </createIndex>
+
+        <createIndex tableName="orders" indexName="idx_order_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="order_ticket" indexName="idx_ticket_type">
+            <column name="ticket_type"/>
+        </createIndex>
+
+        <createIndex tableName="order_ticket" indexName="idx_ticket_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="cook" indexName="idx_cook_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="cook" indexName="idx_cook_ticket">
+            <column name="ticket_id"/>
+        </createIndex>
+
+        <createIndex tableName="customer" indexName="idx_customer_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="customer" indexName="idx_customer_ticket">
+            <column name="ticket_id"/>
+        </createIndex>
+
+        <createIndex tableName="order_taker" indexName="idx_order_taker_status">
+            <column name="status"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

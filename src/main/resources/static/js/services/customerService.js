@@ -1,10 +1,8 @@
-// Сервис для работы с API клиентов
 class CustomerService {
     constructor() {
         this.API_BASE_URL = 'http://localhost:8080/api/customers';
     }
 
-    // Получить всех клиентов
     async getAllCustomers() {
         const response = await fetch(this.API_BASE_URL);
         if (!response.ok) {
@@ -13,7 +11,6 @@ class CustomerService {
         return await response.json();
     }
 
-    // Добавить нового клиента
     async addCustomer(customerData) {
         const response = await fetch(this.API_BASE_URL, {
             method: 'POST',
@@ -30,7 +27,6 @@ class CustomerService {
         return await response.json();
     }
 
-    // Удалить клиента
     async deleteCustomer(id) {
         const response = await fetch(`${this.API_BASE_URL}/${id}`, {
             method: 'DELETE'

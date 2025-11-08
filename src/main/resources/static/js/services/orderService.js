@@ -14,7 +14,6 @@ class OrderService {
         this.currentSorting = 'CREATED_AT_DESC';
     }
 
-    // Получить заказы с фильтрами и пагинацией
     async getOrders(page = this.currentPage, size = this.pageSize, sorting = this.currentSorting) {
         try {
             const requestBody = {
@@ -23,7 +22,6 @@ class OrderService {
                 maxDate: this.currentFilters.maxDate
             };
 
-            // Очищаем null значения
             Object.keys(requestBody).forEach(key => {
                 if (requestBody[key] === null || (Array.isArray(requestBody[key]) && requestBody[key].length === 0)) {
                     delete requestBody[key];
@@ -59,7 +57,6 @@ class OrderService {
 
             console.log('Order response:', data);
 
-            // Сохраняем информацию о пагинации
             this.currentPage = data.number;
             this.totalPages = data.totalPages;
             this.pageSize = data.size;
@@ -80,19 +77,16 @@ class OrderService {
         }
     }
 
-    // Обновить фильтры
     updateFilters(newFilters) {
         this.currentFilters = { ...this.currentFilters, ...newFilters };
-        this.currentPage = 0; // Сбрасываем на первую страницу при изменении фильтров
+        this.currentPage = 0;
     }
 
-    // Обновить сортировку
     updateSorting(newSorting) {
         this.currentSorting = newSorting;
         this.currentPage = 0;
     }
 
-    // Перейти на страницу
     async goToPage(page) {
         if (page >= 0 && page < this.totalPages) {
             this.currentPage = page;
@@ -101,7 +95,6 @@ class OrderService {
         throw new Error('Некорректный номер страницы');
     }
 
-    // Следующая страница
     async nextPage() {
         if (this.currentPage < this.totalPages - 1) {
             this.currentPage++;
@@ -110,7 +103,6 @@ class OrderService {
         throw new Error('Это последняя страница');
     }
 
-    // Предыдущая страница
     async prevPage() {
         if (this.currentPage > 0) {
             this.currentPage--;
@@ -119,19 +111,16 @@ class OrderService {
         throw new Error('Это первая страница');
     }
 
-    // Первая страница
     async firstPage() {
         this.currentPage = 0;
         return await this.getOrders();
     }
 
-    // Последняя страница
     async lastPage() {
         this.currentPage = this.totalPages - 1;
         return await this.getOrders();
     }
 
-    // Сбросить фильтры
     resetFilters() {
         this.currentFilters = {
             userIds: [],

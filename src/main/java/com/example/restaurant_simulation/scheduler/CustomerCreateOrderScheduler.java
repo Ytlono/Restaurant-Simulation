@@ -25,7 +25,6 @@ public class CustomerCreateOrderScheduler {
 
     @Scheduled(fixedRateString = "${restaurant-simulation.scheduler.simulation-handler.customer-rate-ms}")
     public void customerHandle() {
-        System.out.println("CALLLLLLD");
         customerHandler.handle();
     }
 

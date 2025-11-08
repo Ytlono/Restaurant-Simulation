@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.enums.TicketType;
 import com.example.restaurant_simulation.model.entity.*;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+@Pausable
 @Slf4j
 @Service
 @RequiredArgsConstructor

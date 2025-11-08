@@ -1,10 +1,8 @@
-// Сервис для работы с API принимающих заказы
 class OrderTakerService {
     constructor() {
         this.API_BASE_URL = 'http://localhost:8080/api/order-tackers';
     }
 
-    // Получить всех принимающих заказы
     async getAllOrderTakers() {
         const response = await fetch(this.API_BASE_URL);
         if (!response.ok) {
@@ -13,7 +11,6 @@ class OrderTakerService {
         return await response.json();
     }
 
-    // Добавить нового принимающего заказы
     async addOrderTaker(orderTakerData) {
         const response = await fetch(this.API_BASE_URL, {
             method: 'POST',
@@ -30,7 +27,6 @@ class OrderTakerService {
         return await response.json();
     }
 
-    // Удалить принимающего заказы
     async deleteOrderTaker(id) {
         const response = await fetch(`${this.API_BASE_URL}/${id}`, {
             method: 'DELETE'

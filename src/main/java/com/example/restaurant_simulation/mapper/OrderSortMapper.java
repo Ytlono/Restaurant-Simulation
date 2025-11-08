@@ -13,12 +13,12 @@ public class OrderSortMapper {
         }
 
         return switch (sort) {
-            case CREATED_AT_DESC -> Sort.by("createdAt").descending();
-            case CREATED_AT_ASC -> Sort.by("createdAt").ascending();
-            case UPDATED_AT_DESC -> Sort.by("updatedAt").descending();
-            case UPDATED_AT_ASC -> Sort.by("updatedAt").ascending();
-            case CUSTOMER_ID_DESC -> Sort.by("customer.id").descending();
-            case CUSTOMER_ID_ASC -> Sort.by("customer.id").ascending();
+            case CREATED_AT_ASC -> Sort.by(Sort.Direction.ASC, "createdAt");
+            case CREATED_AT_DESC -> Sort.by(Sort.Direction.DESC, "createdAt");
+            case UPDATED_AT_ASC -> Sort.by(Sort.Direction.ASC, "updatedAt");
+            case UPDATED_AT_DESC -> Sort.by(Sort.Direction.DESC, "updatedAt");
+            case CUSTOMER_ID_ASC -> Sort.by(Sort.Direction.ASC, "customerEntity.id");
+            case CUSTOMER_ID_DESC -> Sort.by(Sort.Direction.DESC, "customerEntity.id");
         };
     }
 }

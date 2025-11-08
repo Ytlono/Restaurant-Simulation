@@ -1,51 +1,36 @@
 spring:
   application:
-    name: restaurant-simulation
+    name: user
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:restaurant}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:user}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:pstgrs}
 
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.xml
+    default-schema: public
+    liquibase-schema: public
+    drop-first: false
+
+    jpa:
+      hibernate:
+        ddl-auto: validate
+
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-
     consumer:
-      group-id: ${KAFKA_CONSUMER_GROUP_ID:restaurant-group}
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:success-confirmation-group}
+server:
+  port: ${SERVER_PORT:8082}
 
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-restaurant-simulation:
-  order-ready-topic: order-ready
-
-  actors:
-    cook-actor-threshold: 20s
-    order-taker-threshold: 10s
-    customer-threshold: 8s
-
+user:
   scheduler:
-    actors-availability:
-      enabled: true
-      customer-rate-ms: 1000
-      cook-rate-ms: 1000
-      order-taker-rate-ms: 1000
-      server-rate-ms: 1000
+    phone-confirm:
+      enabled: "true"
+      fixed-rate-ms: 5000
 
-    simulation-handler:
-      enabled: true
-      customer-rate-ms: 1000
-      order-taker-rate-ms: 1000
-      cook-rate-ms: 1000
-      server-rate-ms: 1000
-
-kafka:
-  consumer:
-    confirmation:
-      enabled: true
+confirmation:
+  client:
+    base-url: http://localhost:8084

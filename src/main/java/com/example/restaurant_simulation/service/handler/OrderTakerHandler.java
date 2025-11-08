@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OrderTakerHandler extends OrderHandler{
+public class OrderTakerHandler extends RestaurantHandler {
     private final OrderTakerService orderTakerService;
 
     @Override

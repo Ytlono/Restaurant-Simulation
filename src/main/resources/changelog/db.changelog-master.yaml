@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create-simulated-actor-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-orders-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-order-ticket-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-kitchen-ticket-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-service-ticket-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-cook-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-customer-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-order-taker-table.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: db/changelog/create-indexes.xml
+      relativeToChangelogFile: true

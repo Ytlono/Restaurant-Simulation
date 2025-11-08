@@ -9,6 +9,7 @@ import com.example.restaurant_simulation.service.CookService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,9 @@ public class CookController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         cookService.deleteCook(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
 }

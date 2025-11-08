@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.config.properties.RestaurantServiceProperties;
 import com.example.restaurant_simulation.enums.*;
 import com.example.restaurant_simulation.model.entity.CookEntity;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+
+@Pausable
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,9 +41,19 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
         return cookRepository.save(cook);
     }
 
+    @Transactional
     public void deleteCook(Long id) {
+        CookEntity cook = cookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Повар не найден: " + id));
+
+        if (cook.getStatus() == CookStatus.PROCESSING && cook.getTicket() != null) {
+            kitchenTicketService.updateTicketsStatus(cook.getTicket(), OrderTicketStatus.COMPLETED);
+        }
+
+        cook.setTicket(null);
         cookRepository.deleteById(id);
     }
+
 
     @Transactional
     public void processOrder(CookEntity cook) {
@@ -80,7 +93,6 @@ public class CookService implements ActorServiceInterface<CookEntity,CookStatus>
         List<CookEntity> expiredCooks = cookRepository.findAllByUpdatedAtBefore(threshold);
 
         if (expiredCooks.isEmpty()){
-            System.out.println("COOOOK ACTOR NO EXPIRED COOK");
             return;
         }
 

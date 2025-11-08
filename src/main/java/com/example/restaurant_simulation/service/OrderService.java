@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.dto.request.OrderRequest;
 import com.example.restaurant_simulation.enums.OrderStatus;
 import com.example.restaurant_simulation.model.entity.CustomerEntity;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Pausable
 @Service
 @RequiredArgsConstructor
 public class OrderService {

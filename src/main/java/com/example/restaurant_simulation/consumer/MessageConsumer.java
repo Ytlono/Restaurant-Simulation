@@ -19,8 +19,6 @@ public class MessageConsumer {
             concurrency = "3"
     )
     public void consumeConfirmationMessage(String message) {
-
-        System.out.println("MESSSSSSSSAGEEEEEEEE COOOOOOONSUMMMMMMMMMER");
         customerHandler.orderReady(message);
     }
 }

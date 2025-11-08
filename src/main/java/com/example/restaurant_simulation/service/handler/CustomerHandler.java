@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CustomerHandler extends OrderHandler{
+public class CustomerHandler extends RestaurantHandler {
     private final CustomerService customerService;
     private final ObjectMapper objectMapper;
 
@@ -24,7 +24,6 @@ public class CustomerHandler extends OrderHandler{
     public void orderReady(String order){
         try {
             OrderReadyEvent event = objectMapper.readValue(order,OrderReadyEvent.class);
-            System.out.println("MAPPPPED EVENT" + event.orderId());
             customerService.takeOrder(event.orderId());
         }catch (JsonProcessingException e){
             log.error("Order ready processing exception");

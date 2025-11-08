@@ -1,11 +1,9 @@
-// Менеджер пользовательского интерфейса
 class UIManager {
     constructor() {
         this.currentTab = 'overview';
         this.initializeTabSystem();
     }
 
-    // === Инициализация вкладок ===
     initializeTabSystem() {
         const tabButtons = document.querySelectorAll('.tab-button');
         tabButtons.forEach(button => {
@@ -25,7 +23,6 @@ class UIManager {
         this.currentTab = tabName;
     }
 
-    // === Общие методы ===
     showLoading(elementId) { document.getElementById(elementId).style.display = 'block'; }
     hideLoading(elementId) { document.getElementById(elementId).style.display = 'none'; }
 
@@ -42,7 +39,6 @@ class UIManager {
         document.getElementById(elementId).textContent = `Последнее обновление: ${now.toLocaleTimeString()}`;
     }
 
-    // === Клиенты ===
     getCustomerStatusText(status) {
         const statusMap = {
             'AVAILABLE': 'Свободен',
@@ -80,13 +76,13 @@ class UIManager {
         customerCard.className = `customer-card ${this.getCustomerStatusClass(customer.status)}`;
         customerCard.innerHTML = `
             <div class="customer-id">#${customer.id}</div>
+            <button class="delete-customer-btn" onclick="app.customersManager.deleteCustomer(${customer.id})">×</button>
             <div class="customer-name">${customer.name || 'Клиент #' + customer.id}</div>
             <div class="customer-status">${this.getCustomerStatusText(customer.status)}</div>
         `;
         document.getElementById(containerId).appendChild(customerCard);
     }
 
-    // === Принимающие заказы ===
     displayOrderTakers(orderTakers, containerId) {
         const grid = document.getElementById(containerId);
         grid.innerHTML = '';
@@ -104,6 +100,7 @@ class UIManager {
         orderTakerCard.className = `order-taker-card ${this.getOrderTakerStatusClass(orderTaker.status)}`;
         orderTakerCard.innerHTML = `
             <div class="order-taker-id">#${orderTaker.id}</div>
+            <button class="delete-order-taker-btn" onclick="app.orderTakersManager.deleteOrderTaker(${orderTaker.id})">×</button>
             <div class="order-taker-name">${orderTaker.name || 'Принимающий #' + orderTaker.id}</div>
             <div class="order-taker-status">${this.getOrderTakerStatusText(orderTaker.status)}</div>
         `;
@@ -126,7 +123,6 @@ class UIManager {
         return statusTextMap[status] || status;
     }
 
-    // === Повара ===
     getCookStatusText(status) {
         const statusMap = {
             'AVAILABLE': 'Свободен',
@@ -167,6 +163,7 @@ class UIManager {
 
         cookCard.innerHTML = `
             <div class="cook-id">#${cook.id}</div>
+            <button class="delete-cook-btn" onclick="app.cooksManager.deleteCook(${cook.id})">×</button>
             <div class="cook-name">${cook.name || 'Повар #' + cook.id}</div>
             ${cook.speciality ? `<div class="cook-speciality">${cook.speciality}</div>` : ''}
             <div class="cook-status">${this.getCookStatusText(cook.status)}</div>
@@ -176,7 +173,6 @@ class UIManager {
         document.getElementById(containerId).appendChild(cookCard);
     }
 
-    // === Диалоги ===
     showAddDialog(title) {
         return prompt(title);
     }
@@ -218,7 +214,6 @@ class UIManager {
                 this.createOrderCard(order, containerId);
             });
 
-            // Обновляем информацию о пагинации
             this.updatePaginationInfo(pageInfo);
         }
 
@@ -232,7 +227,6 @@ class UIManager {
             const createdDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Неизвестно';
             const updatedDate = order.updatedAt ? new Date(order.updatedAt).toLocaleString() : 'Неизвестно';
 
-            // ИСПРАВЛЕНИЕ: используем customerName вместо customer.name
             orderCard.innerHTML = `
                 <div class="order-id">#${order.id}</div>
                 <div class="order-customer">
@@ -249,7 +243,6 @@ class UIManager {
             grid.appendChild(orderCard);
         }
 
-        // Обновление информации о пагинации
         updatePaginationInfo(pageInfo) {
             const pageInfoElement = document.getElementById('pageInfo');
             const firstPageBtn = document.getElementById('firstPageBtn');
@@ -261,14 +254,12 @@ class UIManager {
                 pageInfoElement.textContent = `Страница ${pageInfo.currentPage + 1} из ${pageInfo.totalPages}`;
             }
 
-            // Обновляем состояние кнопок
             if (firstPageBtn) firstPageBtn.disabled = !pageInfo || pageInfo.currentPage === 0;
             if (prevPageBtn) prevPageBtn.disabled = !pageInfo || pageInfo.currentPage === 0;
             if (nextPageBtn) nextPageBtn.disabled = !pageInfo || pageInfo.currentPage === pageInfo.totalPages - 1;
             if (lastPageBtn) lastPageBtn.disabled = !pageInfo || pageInfo.currentPage === pageInfo.totalPages - 1;
         }
 
-        // Получение текущих фильтров из формы
         getCurrentFilters() {
             const filters = {
                 statuses: [],
@@ -276,11 +267,9 @@ class UIManager {
                 maxDate: null
             };
 
-            // Собираем выбранные статусы
             const statusCheckboxes = document.querySelectorAll('input[name="status"]:checked');
             filters.statuses = Array.from(statusCheckboxes).map(cb => cb.value);
 
-            // Получаем даты
             const minDateInput = document.getElementById('minDate');
             const maxDateInput = document.getElementById('maxDate');
 
@@ -292,7 +281,6 @@ class UIManager {
                 filters.maxDate = new Date(maxDateInput.value).toISOString();
             }
 
-            // Получаем сортировку
             const sortingSelect = document.getElementById('orderSorting');
             if (sortingSelect) {
                 this.currentOrderSorting = sortingSelect.value;
@@ -301,20 +289,18 @@ class UIManager {
             return filters;
         }
 
-        // Сброс фильтров в форме
         resetFiltersForm() {
-            // Сбрасываем все чекбоксы статусов
             const statusCheckboxes = document.querySelectorAll('input[name="status"]');
             statusCheckboxes.forEach(cb => cb.checked = true);
 
-            // Сбрасываем даты
             const minDateInput = document.getElementById('minDate');
             const maxDateInput = document.getElementById('maxDate');
             if (minDateInput) minDateInput.value = '';
             if (maxDateInput) maxDateInput.value = '';
 
-            // Сбрасываем сортировку
             const sortingSelect = document.getElementById('orderSorting');
             if (sortingSelect) sortingSelect.value = 'CREATED_AT_DESC';
         }
+
+
 }

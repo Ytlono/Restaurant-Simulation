@@ -1,5 +1,6 @@
 package com.example.restaurant_simulation.service;
 
+import com.example.restaurant_simulation.aspect.Pausable;
 import com.example.restaurant_simulation.enums.OrderTicketStatus;
 import com.example.restaurant_simulation.enums.TicketType;
 import com.example.restaurant_simulation.model.entity.CookEntity;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Pausable
 @Slf4j
 @Data
 @RequiredArgsConstructor
@@ -27,9 +29,9 @@ public class KitchenTicketService {
     @Transactional
     public void updateTicketsStatus(KitchenTicketEntity ticket, OrderTicketStatus newStatus) {
         if (ticket == null) {
-            log.warn("❌ Attempted to update status of null KitchenTicketEntity!");
             return;
         }
+
         ticket.setStatus(newStatus);
         ticketRepository.save(ticket);
     }

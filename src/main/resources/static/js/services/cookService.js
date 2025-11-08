@@ -1,4 +1,3 @@
-// Сервис для работы с API поваров
 console.log('=== cookService.js загружен ===');
 
 class CookService {
@@ -6,7 +5,6 @@ class CookService {
         this.API_BASE_URL = 'http://localhost:8080/api/cooks';
     }
 
-    // Получить всех поваров
     async getAllCooks() {
         try {
             const response = await fetch(this.API_BASE_URL);
@@ -20,7 +18,6 @@ class CookService {
         }
     }
 
-    // Добавить нового повара
     async addCook(cookData) {
         try {
             const response = await fetch(this.API_BASE_URL, {
@@ -42,7 +39,6 @@ class CookService {
         }
     }
 
-    // Удалить повара
     async deleteCook(id) {
         try {
             const response = await fetch(`${this.API_BASE_URL}/${id}`, {
@@ -57,4 +53,21 @@ class CookService {
             throw error;
         }
     }
+
+    async deleteCook(cookId) {
+            try {
+                const response = await fetch(`/api/cooks/${cookId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при удалении повара');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Ошибка при удалении повара:', error);
+                throw error;
+            }
+        }
 }

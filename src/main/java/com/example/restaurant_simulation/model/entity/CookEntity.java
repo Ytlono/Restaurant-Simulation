@@ -21,7 +21,7 @@ public class CookEntity extends SimulatedActorEntity {
     @Column(name = "speciality")
     private String speciality;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     private KitchenTicketEntity ticket;
 }

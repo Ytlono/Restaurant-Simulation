@@ -18,7 +18,7 @@ public class CustomerEntity extends SimulatedActorEntity {
     @Enumerated(EnumType.STRING)
     private CustomerStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     private ServiceTicketEntity ticket;
 }

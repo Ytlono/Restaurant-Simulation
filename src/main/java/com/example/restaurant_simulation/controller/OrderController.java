@@ -37,15 +37,6 @@ public class OrderController {
 
         Page<OrderDto> orderDtoPage = orderPage.map(orderMapper::toDto);
 
-        if (!orderDtoPage.getContent().isEmpty()) {
-            OrderDto firstDto = orderDtoPage.getContent().get(0);
-            System.out.println("=== ПОСЛЕ МАППИНГА В DTO ===");
-            System.out.println("DTO ID: " + firstDto.getId());
-            System.out.println("DTO CustomerId: " + firstDto.getCustomerId());
-            System.out.println("DTO CustomerName: " + firstDto.getCustomerName());
-            System.out.println("DTO Status: " + firstDto.getStatus());
-        }
-
         return ResponseEntity.ok(orderDtoPage);
     }
 }

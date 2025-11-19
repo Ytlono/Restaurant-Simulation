@@ -89,7 +89,7 @@ public class OrderTakerService {
 
         expiredOrderTakers.forEach(orderTaker -> {
             orderTaker.setStatus(OrderTakerStatus.AVAILABLE);
-            orderTakerRepository.save(orderTaker); // ← Обновит updatedAt!
+            orderTakerRepository.save(orderTaker);
         });
 
     }
